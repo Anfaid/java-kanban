@@ -1,12 +1,14 @@
 package model;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+
 
 public class EpicTask extends Task {
-    HashMap<Integer, SubTask> mapOfSubTusk = new HashMap<>();
+    List<Integer> listOfSubTusk = new ArrayList<>();
 
-    public EpicTask(Integer taskId, String nameOfTask, String taskDescription, Status taskStatus) {
-        super(taskId, taskDescription, nameOfTask, taskStatus);
+    public EpicTask(String nameOfTask, String taskDescription, Status taskStatus) {
+        super(taskDescription, nameOfTask, taskStatus);
     }
 
     @Override
@@ -19,12 +21,12 @@ public class EpicTask extends Task {
                 '}';
     }
 
-    public HashMap<Integer, SubTask> getMapOfSubTusk() {
-        return mapOfSubTusk;
+    public List<Integer> getListOfSubTask() {
+        return listOfSubTusk;
     }
 
-    public void setMapOfSubTusk(HashMap<Integer, SubTask> mapOfSubTusk ) {
-        this.mapOfSubTusk = mapOfSubTusk;
+    public void setSubTaskId(int idOfSubTask) {
+        listOfSubTusk.add(idOfSubTask);
     }
 }
 

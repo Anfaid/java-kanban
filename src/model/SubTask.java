@@ -5,21 +5,11 @@ import java.util.Objects;
 public class SubTask extends Task {
     Integer idOfEpicTask;
 
-    public SubTask(Integer taskId, String nameOfTask, String taskDescription, Status taskStatus, Integer idOfEpicTask) {
-        super(taskId, nameOfTask, taskDescription, taskStatus);
+    public SubTask(String nameOfTask, String taskDescription, Status taskStatus, Integer idOfEpicTask) {
+        super(nameOfTask, taskDescription, taskStatus);
         this.idOfEpicTask = idOfEpicTask;
     }
 
-    @Override
-    public String toString() {
-        return "SubTask{" +
-                "idOfEpicTask=" + idOfEpicTask +
-                ", nameOfTask='" + nameOfTask + '\'' +
-                ", taskDescription='" + taskDescription + '\'' +
-                ", taskId=" + taskId +
-                ", taskStatus='" + taskStatus + '\'' +
-                '}';
-    }
 
 
 
@@ -40,5 +30,20 @@ public class SubTask extends Task {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), idOfEpicTask);
+    }
+
+    @Override
+    public String toString() {
+        return "SubTask{" +
+                "idOfEpicTask=" + idOfEpicTask +
+                ", nameOfTask='" + nameOfTask + '\'' +
+                ", taskDescription='" + taskDescription + '\'' +
+                ", taskId=" + taskId +
+                ", taskStatus=" + taskStatus +
+                '}';
+    }
+
+    public void setIdOfEpicTask(Integer idOfEpicTask) {
+        this.idOfEpicTask = idOfEpicTask;
     }
 }
