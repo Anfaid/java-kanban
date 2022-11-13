@@ -3,9 +3,9 @@ package model;
 import java.util.Objects;
 
 public class Task {
-    String nameOfTask;
-    String taskDescription;
+    String nameOfTask;;
     int taskId;
+    String taskDescription;
     Status taskStatus; //DONE, IN_PROGRESS, NEW
 
     public Task(String nameOfTask, String taskDescription, Status taskStatus) {
