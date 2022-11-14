@@ -5,7 +5,7 @@ import model.EpicTask;
 import service.Manager;
 import service.TaskManager;
 
-import java.util.List;
+import java.util.LinkedList;
 
 
 public class Main {
@@ -33,7 +33,7 @@ public class Main {
         taskManager.getSubTaskById(5);
         taskManager.getSubTaskById(6);
 
-        List<Task> historyList = taskManager.getHistory();
+        LinkedList<Task> historyList = (LinkedList<Task>) taskManager.getHistory();
         System.out.println(historyList);
     }
 }
