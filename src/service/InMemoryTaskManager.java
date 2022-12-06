@@ -13,7 +13,6 @@ public class InMemoryTaskManager implements TaskManager {
     HashMap<Integer, Task> mapOfDataTask = new HashMap<>();
     HashMap<Integer, SubTask> mapOfDataSubTask = new HashMap<>();
     HashMap<Integer, EpicTask> mapOfDataEpicTask = new HashMap<>();
-    List<Task> historyList = new ArrayList<>();
 
     public InMemoryTaskManager(HistoryManager historyManager) {
         this.historyManager = historyManager;
@@ -109,19 +108,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getCommonTaskById(int id) {
-        historyManager.addTask(mapOfDataTask.get(id));
+        historyManager.addLast(mapOfDataTask.get(id));
         return mapOfDataTask.get(id);
     }
 
     @Override
     public SubTask getSubTaskById(int id) {
-        historyManager.addTask(mapOfDataSubTask.get(id));
+        historyManager.addLast(mapOfDataSubTask.get(id));
         return mapOfDataSubTask.get(id);
     }
 
     @Override
     public EpicTask getEpicTaskById(int id) {
-        historyManager.addTask(mapOfDataEpicTask.get(id));
+        historyManager.addLast(mapOfDataEpicTask.get(id));
         return mapOfDataEpicTask.get(id);
     }
 
@@ -239,7 +238,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public LinkedList<Task> getHistory() {
+    public List<Task> getHistory() {
         return historyManager.getHistory();
     }
 }
