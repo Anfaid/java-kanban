@@ -18,23 +18,29 @@ public class Main {
         taskManager.createNewEpicTask(new EpicTask("Эпик 1", "Описание эпика 1", Status.NEW));
         taskManager.createNewEpicTask(new EpicTask("Эпик 2", "Описание эпика 2", Status.NEW));
         taskManager.createNewSubTask(new SubTask("Сабтаск 1", "Описания 1",
-                Status.IN_PROGRESS, 3));
+                Status.IN_PROGRESS, 4));
         taskManager.createNewSubTask(new SubTask("Сабтаск 2", "Описания 2",
-                Status.IN_PROGRESS, 3));
+                Status.IN_PROGRESS, 4));
         taskManager.createNewSubTask(new SubTask("Сабтаск 3", "Описания 3",
-                Status.DONE, 3));
+                Status.DONE, 4));
 
         System.out.println("*** Реализация метода истории вызовов ***");
-        taskManager.getCommonTaskById(0);
         taskManager.getCommonTaskById(1);
-        taskManager.getEpicTaskById(2);
+        taskManager.getCommonTaskById(2);
         taskManager.getEpicTaskById(3);
-        taskManager.getSubTaskById(4);
+        taskManager.getEpicTaskById(4);
         taskManager.getSubTaskById(5);
         taskManager.getSubTaskById(6);
+        taskManager.getSubTaskById(7);
 
         List<Task> historyList = (List<Task>) taskManager.getHistory();
         System.out.println(historyList);
+
+        taskManager.deleteCommonTaskById(1);
+        taskManager.deleteEpicTaskById(4);
+
+        List<Task> historyListChanged = (List<Task>) taskManager.getHistory();
+        System.out.println(historyListChanged);
 
     }
 }

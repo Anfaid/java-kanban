@@ -84,11 +84,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllCommonTasks() {
+        for (Integer key : mapOfDataTask.keySet()) {
+            historyManager.remove(key);
+        }
+
         mapOfDataTask.clear();
     }
 
     @Override
     public void deleteAllSubTasks() {
+        for (Integer key : mapOfDataSubTask.keySet()) {
+            historyManager.remove(key);
+        }
+
         mapOfDataSubTask.clear();
 
         if (mapOfDataSubTask.isEmpty()) {
@@ -102,6 +110,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllEpicTasks() {
+        for (Integer key : mapOfDataSubTask.keySet()) {
+            historyManager.remove(key);
+        }
+        for (Integer key : mapOfDataEpicTask.keySet()) {
+            historyManager.remove(key);
+        }
+
         mapOfDataEpicTask.clear();
         mapOfDataSubTask.clear();
     }
@@ -128,6 +143,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteCommonTaskById(int id) {
         if (mapOfDataTask.containsKey(id)) {
             mapOfDataTask.remove(id);
+            historyManager.remove(id);
         } else {
             System.out.println("Обычного такска с Id(" + id + ") - ненайдено!");
         }
@@ -138,6 +154,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteSubTaskById(int id) {
         if (mapOfDataSubTask.containsKey(id)) {
             mapOfDataSubTask.remove(id);
+            historyManager.remove(id);
             if (mapOfDataSubTask.get(id) == null) {
                 for (EpicTask epic : mapOfDataEpicTask.values()) {
                     if (epic.getListOfSubTask().contains(id)) {
@@ -157,8 +174,10 @@ public class InMemoryTaskManager implements TaskManager {
             EpicTask epic = mapOfDataEpicTask.get(id);
             for (Integer idOfSubTask : epic.getListOfSubTask()) {
                 mapOfDataSubTask.remove(idOfSubTask);
+                historyManager.remove(idOfSubTask);
             }
             mapOfDataEpicTask.remove(id);
+            historyManager.remove(id);
         } else {
             System.out.println("Эпика с ID(" + id + ") - ненайдено");
         }
