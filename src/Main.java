@@ -2,45 +2,34 @@ import model.Status;
 import model.Task;
 import model.SubTask;
 import model.EpicTask;
+import service.FileBackedTasksManager;
 import service.Manager;
+import service.ManagerSaveException;
 import service.TaskManager;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 
 public class Main {
 
-    public static void main(String[] args) {
-        TaskManager taskManager = Manager.getDefaultInMemoryTaskManager(Manager.getDefaultHistory());
-        System.out.println("*** Создание всех типов задач!***");
-        taskManager.createNewCommonTask(new Task("Зание 1", "Описание 1", Status.NEW));
-        taskManager.createNewCommonTask(new Task("Задание 2", "Описание 2", Status.IN_PROGRESS));
-        taskManager.createNewEpicTask(new EpicTask("Эпик 1", "Описание эпика 1", Status.NEW));
-        taskManager.createNewEpicTask(new EpicTask("Эпик 2", "Описание эпика 2", Status.NEW));
-        taskManager.createNewSubTask(new SubTask("Сабтаск 1", "Описания 1",
-                Status.IN_PROGRESS, 4));
-        taskManager.createNewSubTask(new SubTask("Сабтаск 2", "Описания 2",
-                Status.IN_PROGRESS, 4));
-        taskManager.createNewSubTask(new SubTask("Сабтаск 3", "Описания 3",
-                Status.DONE, 4));
+    public static void main(String[] args) throws IOException, ManagerSaveException {
+        File newFile = new File("practicum.csv");
+        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(newFile);
 
-        System.out.println("*** Реализация метода истории вызовов ***");
-        taskManager.getCommonTaskById(1);
-        taskManager.getCommonTaskById(2);
-        taskManager.getEpicTaskById(3);
-        taskManager.getEpicTaskById(4);
-        taskManager.getSubTaskById(5);
-        taskManager.getSubTaskById(6);
-        taskManager.getSubTaskById(7);
+        fileBackedTasksManager.createNewCommonTask(new Task("Task1","Task1", Status.NEW));
+        fileBackedTasksManager.createNewCommonTask(new Task("Task2","Task2", Status.DONE));
+        fileBackedTasksManager.createNewEpicTask(new EpicTask("Epic1", "Epic1", Status.NEW));
+        fileBackedTasksManager.createNewSubTask(new SubTask("Subtask 1", "Subtask 1",
+                Status.NEW, 3));
+        fileBackedTasksManager.getEpicTaskById(3);
+        fileBackedTasksManager.getCommonTaskById(1);
+        fileBackedTasksManager.getCommonTaskById(2);
+        fileBackedTasksManager.getSubTaskById(4);
 
-        List<Task> historyList = (List<Task>) taskManager.getHistory();
-        System.out.println(historyList);
+        FileBackedTasksManager fileBackedTasksManager1 = FileBackedTasksManager.loadFromFile(newFile);
 
-        taskManager.deleteCommonTaskById(1);
-        taskManager.deleteEpicTaskById(4);
-
-        List<Task> historyListChanged = (List<Task>) taskManager.getHistory();
-        System.out.println(historyListChanged);
 
     }
 }

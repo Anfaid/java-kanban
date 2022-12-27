@@ -5,18 +5,19 @@ import model.SubTask;
 import model.Task;
 import model.Status;
 
+import java.io.IOException;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-    final HistoryManager historyManager;
+     HistoryManager historyManager;
     int idOfTask = 0;
     HashMap<Integer, Task> mapOfDataTask = new HashMap<>();
     HashMap<Integer, SubTask> mapOfDataSubTask = new HashMap<>();
     HashMap<Integer, EpicTask> mapOfDataEpicTask = new HashMap<>();
 
     public InMemoryTaskManager(HistoryManager historyManager) {
-        this.historyManager = historyManager;
     }
+
 
     @Override
 
@@ -25,7 +26,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void createNewCommonTask(Task task) {
+    public void createNewCommonTask(Task task) throws IOException {
         int taskId = generatingId();
         task.setTaskId(taskId);
         mapOfDataTask.put(taskId, task);
@@ -41,7 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void createNewSubTask(SubTask subTask) {
+    public void createNewSubTask(SubTask subTask) throws IOException {
         int taskId = generatingId();
         subTask.setTaskId(taskId);
         EpicTask epicTask = mapOfDataEpicTask.get(subTask.getIdOfEpicTask());
@@ -67,7 +68,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void createNewEpicTask(EpicTask epicTask) {
+    public void createNewEpicTask(EpicTask epicTask) throws IOException {
         int taskId = generatingId();
         epicTask.setTaskId(taskId);
         mapOfDataEpicTask.put(taskId, epicTask);
@@ -122,19 +123,19 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getCommonTaskById(int id) {
+    public Task getCommonTaskById(int id) throws IOException {
         historyManager.addLast(mapOfDataTask.get(id));
         return mapOfDataTask.get(id);
     }
 
     @Override
-    public SubTask getSubTaskById(int id) {
+    public SubTask getSubTaskById(int id) throws IOException {
         historyManager.addLast(mapOfDataSubTask.get(id));
         return mapOfDataSubTask.get(id);
     }
 
     @Override
-    public EpicTask getEpicTaskById(int id) {
+    public EpicTask getEpicTaskById(int id) throws IOException {
         historyManager.addLast(mapOfDataEpicTask.get(id));
         return mapOfDataEpicTask.get(id);
     }

@@ -5,21 +5,22 @@ import model.Status;
 import model.SubTask;
 import model.Task;
 
+import java.io.IOException;
 import java.util.*;
 
 
 public interface TaskManager {
     public int generatingId();
 
-    public void createNewCommonTask(Task task);
+    public void createNewCommonTask(Task task) throws IOException;
 
     public void updateCommonTask(Task task);
 
-    public void createNewSubTask(SubTask subTask);
+    public void createNewSubTask(SubTask subTask) throws IOException;
 
     public void updateSubtask(SubTask subTask);
 
-    public void createNewEpicTask(EpicTask epicTask);
+    public void createNewEpicTask(EpicTask epicTask) throws IOException;
 
     public void updateEpicTask(EpicTask epicTask);
 
@@ -29,11 +30,11 @@ public interface TaskManager {
 
     public void deleteAllEpicTasks();
 
-    public Task getCommonTaskById(int id);
+    public Task getCommonTaskById(int id) throws IOException;
 
-    public SubTask getSubTaskById(int id);
+    public SubTask getSubTaskById(int id) throws IOException;
 
-    public EpicTask getEpicTaskById(int id);
+    public EpicTask getEpicTaskById(int id) throws IOException;
 
     public void deleteCommonTaskById(int id);
 
