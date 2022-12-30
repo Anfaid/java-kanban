@@ -27,6 +27,11 @@ public class Main {
         fileBackedTasksManager.getCommonTaskById(1);
         fileBackedTasksManager.getCommonTaskById(2);
         fileBackedTasksManager.getSubTaskById(4);
+        fileBackedTasksManager.getListAllCommonTasks();
+        fileBackedTasksManager.getListAllSubTasks();
+        fileBackedTasksManager.getListAllEpicTasks();
+        fileBackedTasksManager.getHistory();
+
 
         FileBackedTasksManager fileBackedTasksManager1 = FileBackedTasksManager.loadFromFile(newFile);
 

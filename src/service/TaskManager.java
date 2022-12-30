@@ -12,46 +12,46 @@ import java.util.*;
 public interface TaskManager {
     public int generatingId();
 
-    public void createNewCommonTask(Task task) throws IOException;
+    public void createNewCommonTask(Task task) throws IOException, ManagerSaveException;
 
-    public void updateCommonTask(Task task);
+    public void updateCommonTask(Task task) throws IOException, ManagerSaveException;
 
-    public void createNewSubTask(SubTask subTask) throws IOException;
+    public void createNewSubTask(SubTask subTask) throws IOException, ManagerSaveException;
 
-    public void updateSubtask(SubTask subTask);
+    public void updateSubtask(SubTask subTask) throws IOException, ManagerSaveException;
 
-    public void createNewEpicTask(EpicTask epicTask) throws IOException;
+    public void createNewEpicTask(EpicTask epicTask) throws IOException, ManagerSaveException;
 
-    public void updateEpicTask(EpicTask epicTask);
+    public void updateEpicTask(EpicTask epicTask) throws IOException, ManagerSaveException;
 
-    public void deleteAllCommonTasks();
+    public void deleteAllCommonTasks() throws IOException, ManagerSaveException;
 
-    public void deleteAllSubTasks();
+    public void deleteAllSubTasks() throws IOException, ManagerSaveException;
 
-    public void deleteAllEpicTasks();
+    public void deleteAllEpicTasks() throws IOException, ManagerSaveException;
 
-    public Task getCommonTaskById(int id) throws IOException;
+    public Task getCommonTaskById(int id) throws IOException, ManagerSaveException;
 
-    public SubTask getSubTaskById(int id) throws IOException;
+    public SubTask getSubTaskById(int id) throws IOException, ManagerSaveException;
 
-    public EpicTask getEpicTaskById(int id) throws IOException;
+    public EpicTask getEpicTaskById(int id) throws IOException, ManagerSaveException;
 
-    public void deleteCommonTaskById(int id);
+    public void deleteCommonTaskById(int id) throws IOException, ManagerSaveException;
 
-    public void deleteSubTaskById(int id);
+    public void deleteSubTaskById(int id) throws IOException, ManagerSaveException;
 
-    public void deleteEpicTaskById(int id);
+    public void deleteEpicTaskById(int id) throws IOException, ManagerSaveException;
 
     public List<SubTask> getListOfSubTaskByCurEpic(int id);
 
-    public List<Task> getListAllCommonTasks();
+    public List<Task> getListAllCommonTasks() throws ManagerSaveException;
 
-    public List<SubTask> getListAllSubTasks();
+    public List<SubTask> getListAllSubTasks() throws ManagerSaveException;
 
-    public List<EpicTask> getListAllEpicTasks();
+    public List<EpicTask> getListAllEpicTasks() throws ManagerSaveException;
 
     public void checkEpicStatus(EpicTask epic);
 
-    List<Task> getHistory();
+    List<Task> getHistory() throws ManagerSaveException;
 }
 
