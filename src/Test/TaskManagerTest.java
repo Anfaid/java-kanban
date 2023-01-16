@@ -276,5 +276,106 @@ abstract class TaskManagerTest<T extends TaskManager> {
         SubTask subTask = new SubTask("Task1", "Description", Status.NEW, epic.getTaskId(),
                 Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
         taskManager.createNewSubTask(subTask);
+
+        SubTask subTask1 = new SubTask("Task2", "Description", Status.NEW, epic.getTaskId(),
+                Duration.ofMinutes(5), Instant.ofEpochMilli(456789044));
+        taskManager.createNewSubTask(subTask1);
+
+        ArrayList<SubTask> subTasks = new ArrayList<>();
+        subTasks.add(subTask);
+        subTasks.add(subTask1);
+        assertEquals(subTasks, taskManager.getListOfSubTaskByCurEpic(epic.getTaskId()));
+        assertNotNull(taskManager.getEpicTaskById(epic.getTaskId()));
     }
+
+    @Test
+    public void shouldBeEpicStatusNewThenNotSubtask() throws IOException, ManagerSaveException {
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
+                Instant.ofEpochMilli(4567890));
+        taskManager.createNewEpicTask(epic);
+
+        taskManager.checkEpicStatus(epic);
+        assertNotNull(taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+        assertEquals(Status.NEW, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+    }
+
+    @Test
+    public void shouldBeEpicStatusNewThenAllSubtaskNew() throws IOException, ManagerSaveException {
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
+                Instant.ofEpochMilli(4567890));
+        taskManager.createNewEpicTask(epic);
+
+        taskManager.checkEpicStatus(epic);
+        assertEquals(Status.NEW, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+
+        SubTask subTask = new SubTask("Task1", "Description", Status.NEW, epic.getTaskId(),
+                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+        taskManager.createNewSubTask(subTask);
+
+        SubTask subTask1 = new SubTask("Task2", "Description", Status.NEW, epic.getTaskId(),
+                Duration.ofMinutes(5), Instant.ofEpochMilli(456789044));
+        taskManager.createNewSubTask(subTask1);
+
+        assertNotNull(taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+        assertEquals(Status.NEW, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+    }
+
+    @Test
+    public void shouldBeEpicStatusDoneThenAllSubtaskDone() throws IOException, ManagerSaveException {
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
+                Instant.ofEpochMilli(4567890));
+        taskManager.createNewEpicTask(epic);
+
+        taskManager.checkEpicStatus(epic);
+        assertEquals(Status.NEW, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+
+        SubTask subTask = new SubTask("Task1", "Description", Status.DONE, epic.getTaskId(),
+                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+        taskManager.createNewSubTask(subTask);
+
+        SubTask subTask1 = new SubTask("Task2", "Description", Status.DONE, epic.getTaskId(),
+                Duration.ofMinutes(5), Instant.ofEpochMilli(456789044));
+        taskManager.createNewSubTask(subTask1);
+        assertNotNull(taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+        assertEquals(Status.DONE, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+    }
+
+    @Test
+    public void shouldBeEpicStatusInProgressThenSubtaskNewAndDone() throws IOException, ManagerSaveException {
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
+                Instant.ofEpochMilli(4567890));
+        taskManager.createNewEpicTask(epic);
+
+        taskManager.checkEpicStatus(epic);
+        assertEquals(Status.NEW, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+
+        SubTask subTask = new SubTask("Task1", "Description", Status.NEW, epic.getTaskId(),
+                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+        taskManager.createNewSubTask(subTask);
+        SubTask subTask1 = new SubTask("Task2", "Description", Status.DONE, epic.getTaskId(),
+                Duration.ofMinutes(5), Instant.ofEpochMilli(456789044));
+        taskManager.createNewSubTask(subTask1);
+        assertNotNull(taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+    }
+
+    @Test
+    public void shouldBeEpicStatusInProgressThenAllSubtaskInprogress() throws IOException, ManagerSaveException {
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
+                Instant.ofEpochMilli(4567890));
+        taskManager.createNewEpicTask(epic);
+
+        taskManager.checkEpicStatus(epic);
+        assertEquals(Status.NEW, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+
+        SubTask subTask = new SubTask("Task1", "Description", Status.IN_PROGRESS, epic.getTaskId(),
+                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+        taskManager.createNewSubTask(subTask);
+        SubTask subTask1 = new SubTask("Task2", "Description", Status.IN_PROGRESS, epic.getTaskId(),
+                Duration.ofMinutes(5), Instant.ofEpochMilli(456789044));
+        taskManager.createNewSubTask(subTask1);
+        assertNotNull(taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
+    }
+
 }
