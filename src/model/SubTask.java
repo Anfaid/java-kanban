@@ -1,12 +1,14 @@
 package model;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Objects;
 
 public class SubTask extends Task {
     Integer idOfEpicTask;
 
-    public SubTask(String nameOfTask, String taskDescription, Status taskStatus, Integer idOfEpicTask) {
-        super(nameOfTask, taskDescription, taskStatus);
+    public SubTask(String nameOfTask, String taskDescription, Status taskStatus, Integer idOfEpicTask, Duration duration, Instant startTime) {
+        super(nameOfTask, taskDescription, taskStatus,duration, startTime);
         this.idOfEpicTask = idOfEpicTask;
     }
 
@@ -32,18 +34,14 @@ public class SubTask extends Task {
         return Objects.hash(super.hashCode(), idOfEpicTask);
     }
 
-    @Override
-    public String toString() {
-        return "SubTask{" +
-                "idOfEpicTask=" + idOfEpicTask +
-                ", nameOfTask='" + nameOfTask + '\'' +
-                ", taskDescription='" + taskDescription + '\'' +
-                ", taskId=" + taskId +
-                ", taskStatus=" + taskStatus +
-                '}';
-    }
+
 
     public void setIdOfEpicTask(Integer idOfEpicTask) {
         this.idOfEpicTask = idOfEpicTask;
+    }
+
+    @Override
+    public String toString() {
+        return "SubTask{}";
     }
 }

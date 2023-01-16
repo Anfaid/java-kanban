@@ -6,6 +6,8 @@ import model.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +18,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
 
     public FileBackedTasksManager(File file) {
+        super();
         this.file = file;
 
     }
@@ -221,21 +224,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         String name = split[2];
         String taskDescription = split[4];
         Status status = Status.valueOf(split[3].trim());
+        String stringStart = split[5].trim();
+        Instant startTime = Instant.parse(stringStart);
+        Duration duration = Duration.ZERO;
         int epicId = 0;
         if (split.length == 6) {
             epicId = Integer.parseInt(split[5].trim());
         }
         if ("EPIC".equals(split[1].trim())) {
-            EpicTask epic = new EpicTask(name, taskDescription, status);
+            EpicTask epic = new EpicTask(name, taskDescription, status, duration, startTime);
             epic.setTaskId(id);
             epic.setTaskStatus(Status.valueOf(split[3].trim().toUpperCase()));
             return epic;
         } else if ("SUBTASK".equals(split[1].trim())) {
-            SubTask subTask = new SubTask(name, taskDescription,status ,epicId);
+            SubTask subTask = new SubTask(name, taskDescription,status ,epicId, duration, startTime);
             subTask.setTaskId(id);
             return subTask;
         } else {
-            Task task = new Task(name, taskDescription, status);
+            Task task = new Task(name, taskDescription, status, duration, startTime);
             task.setTaskId(id);
             return task;
         }

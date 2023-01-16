@@ -53,5 +53,9 @@ public interface TaskManager {
     public void checkEpicStatus(EpicTask epic);
 
     List<Task> getHistory() throws ManagerSaveException;
+
+    public HashMap<Integer, EpicTask> getEpicMap();
+    public HashMap<Integer, Task> getTaskMap();
+    public HashMap<Integer, SubTask> getSubtaskMap();
 }
 

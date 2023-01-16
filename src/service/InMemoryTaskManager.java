@@ -9,13 +9,16 @@ import java.io.IOException;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-     HistoryManager historyManager;
+    HistoryManager historyManager;
     int idOfTask = 0;
     HashMap<Integer, Task> mapOfDataTask = new HashMap<>();
     HashMap<Integer, SubTask> mapOfDataSubTask = new HashMap<>();
     HashMap<Integer, EpicTask> mapOfDataEpicTask = new HashMap<>();
 
 
+    public InMemoryTaskManager(HistoryManager historyManager) {
+        this.historyManager = historyManager;
+    }
 
 
     @Override
@@ -260,4 +263,49 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getHistory() throws ManagerSaveException {
         return historyManager.getHistory();
     }
+
+    @Override
+    public HashMap<Integer, EpicTask> getEpicMap() {
+        return mapOfDataEpicTask;
+    }
+
+    @Override
+    public HashMap<Integer, Task> getTaskMap() {
+        return mapOfDataTask;
+    }
+
+    @Override
+    public HashMap<Integer, SubTask> getSubtaskMap() {
+        return mapOfDataSubTask;
+    }
+
+    public TreeSet<Task> prioritizedTaskSet = new TreeSet<>(Comparator.nullsLast(Comparator.comparing(Task::getStartTime)).
+            thenComparing(Task::getTaskId));
+
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTaskSet);
+    }
+
+    private boolean isCrossing(Task task) {
+        for (Task t : prioritizedTaskSet) {
+            if (task.getStartTime().isAfter(t.getStartTime()) && task.getStartTime().isBefore(t.getEndTime())) {
+                return true;
+            } else if (task.getEndTime().isAfter(t.getStartTime()) && task.getEndTime().isBefore(t.getEndTime())) {
+                return true;
+            } else if (task.getStartTime().equals(t.getStartTime()) || task.getEndTime().equals(t.getEndTime())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void clearPrioritizedTasks() {
+        if (!prioritizedTaskSet.isEmpty()) {
+            prioritizedTaskSet.clear();
+        } else {
+            throw new IllegalArgumentException("Список задач в порядке приоритета пуст!");
+        }
+    }
+
+
 }
