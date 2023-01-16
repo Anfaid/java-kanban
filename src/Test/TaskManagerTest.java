@@ -267,5 +267,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(new ArrayList(taskManager.getEpicMap().values()), taskManager.getListAllEpicTasks());
     }
 
+    @Test
+    public void shouldBegetListOfSubTaskByCurEpic() throws IOException, ManagerSaveException {
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
+                Instant.ofEpochMilli(4567890));
+        taskManager.createNewEpicTask(epic);
 
+        SubTask subTask = new SubTask("Task1", "Description", Status.NEW, epic.getTaskId(),
+                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+        taskManager.createNewSubTask(subTask);
+    }
 }
