@@ -9,16 +9,14 @@ import java.io.IOException;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-    HistoryManager historyManager;
+    HistoryManager historyManager = Manager.getDefaultHistory();
     int idOfTask = 0;
     HashMap<Integer, Task> mapOfDataTask = new HashMap<>();
     HashMap<Integer, SubTask> mapOfDataSubTask = new HashMap<>();
     HashMap<Integer, EpicTask> mapOfDataEpicTask = new HashMap<>();
 
 
-    public InMemoryTaskManager(HistoryManager historyManager) {
-        this.historyManager = historyManager;
-    }
+
 
 
     @Override

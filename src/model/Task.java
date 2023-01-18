@@ -13,7 +13,7 @@ public class Task {
     Duration duration;
     Instant startTime;
 
-    public Task(String nameOfTask, String taskDescription, Status taskStatus, Duration duration, Instant startTime) {
+    public Task(String nameOfTask, String taskDescription, Status taskStatus, Instant startTime, Duration duration) {
         this.nameOfTask = nameOfTask;
         this.taskDescription = taskDescription;
         this.taskStatus = taskStatus;

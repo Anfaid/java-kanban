@@ -5,6 +5,7 @@ import model.Status;
 import model.SubTask;
 import model.Task;
 import org.junit.jupiter.api.Test;
+import service.HistoryManager;
 import service.ManagerSaveException;
 import service.TaskManager;
 
@@ -24,7 +25,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void shouldCreateCommonTask() throws IOException, ManagerSaveException {
         Task newTask = new Task("Task1", "Description", Status.NEW,
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewCommonTask(newTask);
 
         assertEquals(newTask, taskManager.getCommonTaskById(newTask.getTaskId()));
@@ -37,11 +38,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void shouldCreateSubtask() throws IOException, ManagerSaveException {
         EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         SubTask subTask = new SubTask("Task1", "Description", Status.NEW,
-                epic.getTaskId(), Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                epic.getTaskId(),Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask);
 
         assertEquals(epic, taskManager.getEpicTaskById(epic.getTaskId()));
@@ -58,7 +59,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void shouldCreateEpicTask() throws IOException, ManagerSaveException {
         EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         assertEquals(epic, taskManager.getEpicTaskById(epic.getTaskId()));
@@ -72,7 +73,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void shouldUpdateCommonTask() throws IOException, ManagerSaveException {
         Task task = new Task("Task1", "Description", Status.NEW,
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewCommonTask(task);
 
         assertNotNull(taskManager.getCommonTaskById(task.getTaskId()));
@@ -83,12 +84,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldUpdateSubtask() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         SubTask subTask = new SubTask("Task1", "Description", Status.NEW, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask);
 
         assertNotNull(taskManager.getEpicTaskById(epic.getTaskId()));
@@ -103,7 +104,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void shouldUpdateEpicTask() throws IOException, ManagerSaveException {
         EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
         assertNotNull(taskManager.getEpicTaskById(epic.getTaskId()));
         epic.setTaskDescription("new descrip.");
@@ -114,8 +115,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBeGetCommonTaskById() throws IOException, ManagerSaveException {
-        Task task = new Task("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        Task task = new Task("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewCommonTask(task);
 
         assertNotNull(taskManager.getCommonTaskById(task.getTaskId()));
@@ -124,12 +125,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBeGetSubtaskById() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         SubTask subTask = new SubTask("Task1", "Description", Status.NEW, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask);
 
         assertEquals(subTask, taskManager.getSubTaskById(subTask.getTaskId()));
@@ -138,8 +139,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBeGetEpicTaskById() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         assertEquals(epic, taskManager.getEpicTaskById(epic.getTaskId()));
@@ -149,28 +150,28 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void shouldThrowExceptionWhenSubtaskIsNull() {
         SubTask subTask = new SubTask("Task1", "Description", Status.NEW, 5,
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         assertThrows(NullPointerException.class, () -> taskManager.getSubTaskById(subTask.getTaskId()));
     }
 
     @Test
     public void shouldThrowExceptionWhenCommonTaskIsNull() {
-        Task task = new Task("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        Task task = new Task("Task1", "Description",
+                Status.NEW,Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         assertThrows(NullPointerException.class, () -> taskManager.getCommonTaskById(task.getTaskId()));
     }
 
     @Test
     public void shouldThrowExceptionWhenEpicTaskIsNull() {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description",
+                Status.NEW,Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         assertThrows(NullPointerException.class, () -> taskManager.getEpicTaskById(epic.getTaskId()));
     }
 
     @Test
     public void shouldBeDeleteCommonTaskById() throws IOException, ManagerSaveException {
-        Task task = new Task("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        Task task = new Task("Task1", "Description",
+                Status.NEW,Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewCommonTask(task);
 
         assertNotNull(taskManager.getCommonTaskById(task.getTaskId()));
@@ -181,12 +182,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBeDeleteSubtaskById() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         SubTask subTask = new SubTask("Task1", "Description", Status.NEW, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask);
 
         assertNotNull(taskManager.getSubTaskById(subTask.getTaskId()));
@@ -197,8 +198,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBeDeleteEpicTaskById() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         assertEquals(epic, taskManager.getEpicTaskById(epic.getTaskId()));
@@ -209,8 +210,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBeDeleteAllCommonTask() throws IOException, ManagerSaveException {
-        Task task = new Task("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        Task task = new Task("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewCommonTask(task);
 
         assertNotNull(taskManager.getCommonTaskById(task.getTaskId()));
@@ -221,12 +222,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBeDeleteAllSubtask() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         SubTask subTask = new SubTask("Task1", "Description", Status.NEW, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask);
 
         assertNotNull(taskManager.getSubTaskById(subTask.getTaskId()));
@@ -238,8 +239,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBeDeleteAllEpicTask() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         assertEquals(epic, taskManager.getEpicTaskById(epic.getTaskId()));
@@ -269,16 +270,16 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBegetListOfSubTaskByCurEpic() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         SubTask subTask = new SubTask("Task1", "Description", Status.NEW, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask);
 
         SubTask subTask1 = new SubTask("Task2", "Description", Status.NEW, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(456789044));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask1);
 
         ArrayList<SubTask> subTasks = new ArrayList<>();
@@ -290,8 +291,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBeEpicStatusNewThenNotSubtask() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         taskManager.checkEpicStatus(epic);
@@ -301,19 +302,19 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBeEpicStatusNewThenAllSubtaskNew() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         taskManager.checkEpicStatus(epic);
         assertEquals(Status.NEW, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
 
         SubTask subTask = new SubTask("Task1", "Description", Status.NEW, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask);
 
         SubTask subTask1 = new SubTask("Task2", "Description", Status.NEW, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(456789044));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask1);
 
         assertNotNull(taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
@@ -322,19 +323,19 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBeEpicStatusDoneThenAllSubtaskDone() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         taskManager.checkEpicStatus(epic);
         assertEquals(Status.NEW, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
 
         SubTask subTask = new SubTask("Task1", "Description", Status.DONE, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask);
 
         SubTask subTask1 = new SubTask("Task2", "Description", Status.DONE, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(456789044));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask1);
         assertNotNull(taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
         assertEquals(Status.DONE, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
@@ -342,40 +343,58 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void shouldBeEpicStatusInProgressThenSubtaskNewAndDone() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         taskManager.checkEpicStatus(epic);
         assertEquals(Status.NEW, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
 
         SubTask subTask = new SubTask("Task1", "Description", Status.NEW, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask);
         SubTask subTask1 = new SubTask("Task2", "Description", Status.DONE, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(456789044));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask1);
         assertNotNull(taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
         assertEquals(Status.IN_PROGRESS, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
     }
 
     @Test
-    public void shouldBeEpicStatusInProgressThenAllSubtaskInprogress() throws IOException, ManagerSaveException {
-        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW, Duration.ofMinutes(5),
-                Instant.ofEpochMilli(4567890));
+    public void shouldBeEpicStatusInProgressThenAllSubtaskInProgress() throws IOException, ManagerSaveException {
+        EpicTask epic = new EpicTask("Task1", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewEpicTask(epic);
 
         taskManager.checkEpicStatus(epic);
         assertEquals(Status.NEW, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
 
         SubTask subTask = new SubTask("Task1", "Description", Status.IN_PROGRESS, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(4567890));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask);
         SubTask subTask1 = new SubTask("Task2", "Description", Status.IN_PROGRESS, epic.getTaskId(),
-                Duration.ofMinutes(5), Instant.ofEpochMilli(456789044));
+                Instant.ofEpochMilli(4567890),Duration.ofMinutes(5) );
         taskManager.createNewSubTask(subTask1);
         assertNotNull(taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
         assertEquals(Status.IN_PROGRESS, taskManager.getEpicMap().get(epic.getTaskId()).getTaskStatus());
     }
+
+    @Test
+    void shouldCheckCrossingTasks() throws IOException, ManagerSaveException {
+        Task task = new Task("Task", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567890l), Duration.ofMinutes(5));
+        taskManager.createNewCommonTask(task);
+        Task task1 = new Task("Task", "Description", Status.NEW,
+                Instant.ofEpochMilli(4567992l), Duration.ofMinutes(5));
+        ManagerSaveException exception = assertThrows(
+
+                ManagerSaveException.class, () -> {
+                    taskManager.createNewCommonTask(task1);
+                });
+
+        assertEquals("Пересечение задач!" + task1.getTaskId() + "не сохранена", exception.getMessage());
+    }
+
+
 
 }

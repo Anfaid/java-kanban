@@ -10,8 +10,8 @@ public class EpicTask extends Task {
     List<Integer> listOfSubTusk = new ArrayList<>();
     Instant endTime;
 
-    public EpicTask(String nameOfTask, String taskDescription, Status taskStatus, Duration duration, Instant startTime) {
-        super(taskDescription, nameOfTask, taskStatus, duration, startTime );
+    public EpicTask(String nameOfTask, String taskDescription, Status taskStatus, Instant startTime, Duration duration) {
+        super(taskDescription, nameOfTask, taskStatus, startTime, duration );
         this.endTime = super.getEndTime();
     }
 
