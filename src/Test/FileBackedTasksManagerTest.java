@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-public class FileBackedTasksManagerTest {
+public class FileBackedTasksManagerTest extends TaskManagerTest {
     public static final Path path = Path.of("file.CSV");
     File file;
     FileBackedTasksManager fileManager ;
