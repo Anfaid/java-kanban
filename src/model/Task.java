@@ -13,6 +13,8 @@ public class Task {
     Duration duration;
     Instant startTime;
 
+     static Instant lastTaskTimesUpdate;
+
     public Task(String nameOfTask, String taskDescription, Status taskStatus, Instant startTime, Duration duration) {
         this.nameOfTask = nameOfTask;
         this.taskDescription = taskDescription;
@@ -67,6 +69,19 @@ public class Task {
 
     public Instant getEndTime() {
         return startTime.plus(duration);
+    }
+
+    public void copyTask(Task taskToCopy) {
+        this. nameOfTask = taskToCopy.nameOfTask;
+        this.taskDescription = taskToCopy.taskDescription;
+        this.taskStatus = taskToCopy.taskStatus;
+        this.setDuration(taskToCopy.duration);
+        this.setStartTime(taskToCopy.startTime);
+        updateLastTaskTimesUpdate();
+    }
+
+    protected static void updateLastTaskTimesUpdate() {
+        lastTaskTimesUpdate = Instant.now();
     }
 
     @Override
