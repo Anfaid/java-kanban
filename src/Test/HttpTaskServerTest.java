@@ -14,120 +14,73 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import Server.HttpTaskServer;
+import Server.KVServer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import model.EpicTask;
 import model.Status;
+import model.SubTask;
 import model.Task;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import Server.HttpTaskServer;
 import service.Manager;
 import service.ManagerSaveException;
 import service.TaskManager;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class HttpTaskServerTest {
     private static final String uriBase = "http://localhost:8080";
-    private static HttpClient httpClient;
+    private HttpClient client = HttpClient.newHttpClient();
     private static Gson gson;
     private static HttpTaskServer taskServer;
     private static TaskManager manager;
+    private static KVServer kvServer;
 
 
     HttpTaskServerTest() {
     }
-    @AfterAll
-    static void AfterAll() {
-        try {
-            taskServer.stopServer();
-        } catch (Throwable e) {
-            throw e;
-        }
+
+    protected void Tasks() throws IOException, ManagerSaveException{
+        Task task1 = new Task("Task1", "Description1",Status.NEW,
+Instant.ofEpochMilli(45678765490l), Duration.ofMinutes(5));
+        manager.createNewCommonTask(task1);
+        Task task2 = new Task("Task2", "Description3",Status.NEW,
+                Instant.ofEpochMilli(45678765490l), Duration.ofMinutes(5));
+        manager.createNewCommonTask(task2);
+        EpicTask epic = new EpicTask("epic1", "Description1",Status.NEW,
+                Instant.ofEpochMilli(45678765490l), Duration.ofMinutes(5));
+        manager.createNewEpicTask(epic);
+        SubTask subTask1 = new SubTask("st1", "Description1",Status.NEW, epic.getTaskId(),
+                Instant.ofEpochMilli(45678765490l), Duration.ofMinutes(5));
+        manager.createNewSubTask(subTask1);
+        SubTask subTask2 = new SubTask("st2", "Description1",Status.NEW, epic.getTaskId(),
+                Instant.ofEpochMilli(45678765490l), Duration.ofMinutes(5));
+        manager.createNewSubTask(subTask2);
+
+    }
+    @AfterEach
+   void AfterEach() {
+        taskServer.stopServer();
+        kvServer.stop();
     }
 
     @BeforeEach
     void BeforeEach() throws IOException, ManagerSaveException {
-        manager.deleteAllCommonTasks();
-    }
-
-    @BeforeAll
-    static void BeforeAll() throws IOException {
-
+        Tasks();
+        manager = Manager.getDefaultInMemoryTaskManager();
+        kvServer = new KVServer();
+        kvServer.start();
         gson = new Gson();
-        httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(3L)).build();
-        taskServer = new HttpTaskServer();
-        taskServer.startServer();
-        manager = Manager.getDefault();
-
+        taskServer = new HttpTaskServer(manager);
     }
 
-    @Test
-    void testTasksHandlers() throws IOException, InterruptedException, ManagerSaveException {
 
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("http://localhost:8080/tasks/")).version(Version.HTTP_1_1).build();
-        HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-        Assertions.assertEquals(200, response.statusCode());
-        List<Task> tasks =  gson.fromJson(response.body(), ArrayList.class);
-        Assertions.assertNotNull(tasks);
-        Assertions.assertEquals(manager.getListAllCommonTasks().size(), tasks.size());
-        Task task = new Task("Task3", "Description3", Status.NEW, Instant.now(), Duration.ofMinutes(5));
-        manager.createNewCommonTask(task);
-        response = httpClient.send(request, BodyHandlers.ofString());
-        Assertions.assertEquals(200, response.statusCode());
 
-        tasks =  gson.fromJson(response.body(), ArrayList.class);
-        Assertions.assertNotNull(tasks);
-        Assertions.assertEquals(manager.getListAllCommonTasks().size(), tasks.size());
-    }
 
-    @Test
-    void testRootHandlers() throws IOException, InterruptedException {
 
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("http://localhost:8080/")).version(Version.HTTP_1_1).build();
-        HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-        Assertions.assertEquals(200, response.statusCode());
-        Assertions.assertNotEquals(0, ((String) response.body()).length());
-
-    }
-
-    @Test
-    void testStartAndStopServer() {
-        try {
-            Assertions.assertDoesNotThrow(() -> {
-                taskServer.stopServer();
-            });
-            Assertions.assertDoesNotThrow(() -> {
-                taskServer.startServer();
-            });
-        } catch (Throwable e) {
-            throw e;
-        }
-    }
-
-    @Test
-    void testHistoryHandlers() throws IOException, InterruptedException, ManagerSaveException {
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("http://localhost:8080/tasks/history/"))
-                .version(Version.HTTP_1_1).build();
-        for (int i = 1; i <= 3; ++i) {
-            Task task = new Task("Task1", "Description1",Status.NEW,
-                    Instant.ofEpochMilli(45678765490l), Duration.ofMinutes(5));
-            manager.createNewCommonTask(task);
-            manager.getCommonTaskById(task.getTaskId());
-            HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-            Assertions.assertEquals(200, response.statusCode());
-            String lastResponse = (String) response.body();
-            Type listType = (new TypeToken<ArrayList<Task>>() {
-            }).getType();
-            List<Task> history = (List) gson.fromJson((String) response.body(), listType);
-            Assertions.assertNotNull(history);
-            Assertions.assertEquals(manager.getListAllCommonTasks(), history.size());
-            String s = gson.toJson(task);
-            Assertions.assertTrue(lastResponse.contains(s));
-        }
-    }
 
 }

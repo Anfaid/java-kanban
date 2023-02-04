@@ -12,9 +12,11 @@ import model.Task;
 import java.io.IOException;
 import java.net.URI;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class HttpTaskManager extends FileBackedTasksManager {
@@ -25,10 +27,10 @@ public class HttpTaskManager extends FileBackedTasksManager {
     private final KVTaskClient taskClient;
 
 
-    public HttpTaskManager(URI uri) throws ManagerSaveException {
+    public HttpTaskManager(String  url) throws ManagerSaveException {
         super(null);
         try {
-            taskClient = new KVTaskClient(uri);
+            taskClient = new KVTaskClient(url);
         } catch (IOException | InterruptedException e) {
             throw new ManagerSaveException("Ошибка при подключении к KVServer");
         }
@@ -37,10 +39,11 @@ public class HttpTaskManager extends FileBackedTasksManager {
     @Override
     public void save() throws ManagerSaveException {
         try {
-            taskClient.put("CommonTasks", gson.toJson(mapOfDataTask));
-            taskClient.put("Epics", gson.toJson(mapOfDataEpicTask));
-            taskClient.put("Subtasks", gson.toJson(mapOfDataSubTask));
-            taskClient.put("history", gson.toJson(historyManager.getHistory()));
+            taskClient.put("CommonTasks", gson.toJson(new ArrayList<>(mapOfDataTask.values())));
+            taskClient.put("Epics", gson.toJson(new ArrayList<>(mapOfDataEpicTask.values())));
+            taskClient.put("Subtasks", gson.toJson(new ArrayList<>(mapOfDataEpicTask.values())));
+            taskClient.put("history", gson.toJson(historyManager.getHistory().stream().
+                    map(Task::getTaskId).collect(Collectors.toList())));
 
         } catch (IOException | InterruptedException err) {
             throw new ManagerSaveException("Ошибка при сохранении данных");
@@ -48,41 +51,37 @@ public class HttpTaskManager extends FileBackedTasksManager {
     }
 
     public void load() {
-        try {
-            Map<Integer, Task> tasks = gson.fromJson(
-                    taskClient.load("tasks"),
-                    new TypeToken<HashMap<Integer, Task>>() {
-                    }.getType()
-            );
-            Map<Integer, EpicTask> epics = gson.fromJson(
-                    taskClient.load("epics"),
-                    new TypeToken<HashMap<Integer, EpicTask>>() {
-                    }.getType()
-            );
-            Map<Integer, SubTask> subtasks = gson.fromJson(
-                    taskClient.load("subtasks"),
-                    new TypeToken<HashMap<Integer, SubTask>>() {
-                    }.getType()
-            );
-            List<Task> historyList = gson.fromJson(
-                    taskClient.load("history"),
-                    new TypeToken<List<Task>>() {
-                    }.getType()
-            );
-            HistoryManager history = new InMemoryHistoryManager();
-            historyList.forEach(history::addLast);
+        Map<Integer, Task> tasks = gson.fromJson(
+                taskClient.load("tasks"),
+                new TypeToken<HashMap<Integer, Task>>() {
+                }.getType()
+        );
+        Map<Integer, EpicTask> epics = gson.fromJson(
+                taskClient.load("epics"),
+                new TypeToken<HashMap<Integer, EpicTask>>() {
+                }.getType()
+        );
+        Map<Integer, SubTask> subtasks = gson.fromJson(
+                taskClient.load("subtasks"),
+                new TypeToken<HashMap<Integer, SubTask>>() {
+                }.getType()
+        );
+        List<Task> historyList = gson.fromJson(
+                taskClient.load("history"),
+                new TypeToken<List<Task>>() {
+                }.getType()
+        );
+        HistoryManager history = new InMemoryHistoryManager();
+        historyList.forEach(history::addLast);
 
-            int startId = Integer.parseInt(taskClient.load("startId"));
+        int startId = Integer.parseInt(taskClient.load("startId"));
 
-            this.mapOfDataTask = (HashMap<Integer, Task>) tasks;
-            this.mapOfDataEpicTask= (HashMap<Integer, EpicTask>) epics;
-            this.mapOfDataSubTask = (HashMap<Integer, SubTask>) subtasks;
-            this.historyManager = history;
-            this.prioritizedTaskSet.addAll(tasks.values());
-            this.prioritizedTaskSet.addAll(epics.values());
-            this.prioritizedTaskSet.addAll(subtasks.values());
-        } catch (IOException | InterruptedException exception) {
-            System.out.println("Ошибка");
-        }
+        this.mapOfDataTask = (HashMap<Integer, Task>) tasks;
+        this.mapOfDataEpicTask= (HashMap<Integer, EpicTask>) epics;
+        this.mapOfDataSubTask = (HashMap<Integer, SubTask>) subtasks;
+        this.historyManager = history;
+        this.prioritizedTaskSet.addAll(tasks.values());
+        this.prioritizedTaskSet.addAll(epics.values());
+        this.prioritizedTaskSet.addAll(subtasks.values());
     }
 }

@@ -4,41 +4,45 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import Server.KVServer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class Manager {
-    private final static TaskManager defaultManager=new InMemoryTaskManager();
-    public static TaskManager getDefaultInMemoryTaskManager(HistoryManager historyManager) {
+
+
+    public static TaskManager getDefaultInMemoryTaskManager() {
         return new InMemoryTaskManager();
     }
 
-        public static HistoryManager getDefaultHistory() {
-            return new InMemoryHistoryManager();
-        }
 
-    public static TaskManager getDefault() {
-        return defaultManager;
+
+    public static TaskManager getDefault() throws ManagerSaveException {
+        return new HttpTaskManager("http://localhost:8078");
     }
 
     public static URI DEFAULT_URI;
 
     static {
         try {
-            DEFAULT_URI = new URI("http://localhost:"+ KVServer.PORT);
+            DEFAULT_URI = new URI("http://localhost:" + KVServer.PORT);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
 
-    private static TaskManager taskManager;
 
-    static {
-        try {
-            taskManager = new HttpTaskManager(DEFAULT_URI);
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
+
+    public static Gson getGsonBuilder() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        return gsonBuilder.create();
     }
 
+    public static HistoryManager getDefaultHistory() {
+        return new InMemoryHistoryManager();
+
     }
+
+
+}
 

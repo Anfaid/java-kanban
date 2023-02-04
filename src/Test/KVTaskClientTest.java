@@ -19,8 +19,7 @@ public class KVTaskClientTest {
 
     @BeforeEach
     void BeforeEach() throws IOException, InterruptedException, URISyntaxException {
-        URI uri =new URI("http://localhost:8078");
-        this.taskClient = new KVTaskClient(uri );
+        this.taskClient = new KVTaskClient("http://localhost:8078");
     }
 
     @BeforeAll

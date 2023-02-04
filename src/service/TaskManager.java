@@ -57,5 +57,7 @@ public interface TaskManager {
     public HashMap<Integer, EpicTask> getEpicMap();
     public HashMap<Integer, Task> getTaskMap();
     public HashMap<Integer, SubTask> getSubtaskMap();
+
+    public List<Task> getPrioritizedTasks();
 }
 
